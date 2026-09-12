@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Programming Advices | تحدي الدراسة</title>
+<title>Programming Advices | &#x062a;&#x062d;&#x062f;&#x064a; &#x0627;&#x0644;&#x062f;&#x0631;&#x0627;&#x0633;&#x0629;</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Marhey:wght@400;600;700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -177,7 +177,7 @@
     color:#fff;
     border-color:transparent;
   }
-  .day.done::after{content:"💗"; position:absolute; font-size:0.6rem; top:-5px; left:-3px;}
+  .day.done::after{content:"&#x1f497;"; position:absolute; font-size:0.6rem; top:-5px; left:-3px;}
   .day.future{opacity:0.35;}
 
   .board-row{
@@ -269,51 +269,51 @@
 <body>
 <div class="wrap">
   <div class="brand"><span class="brand-dot"></span><span>Programming Advices</span></div>
-  <h1>تحدي الدراسة 💫</h1>
+  <h1>&#x062a;&#x062d;&#x062f;&#x064a; &#x0627;&#x0644;&#x062f;&#x0631;&#x0627;&#x0633;&#x0629; &#x1f4ab;</h1>
   <div class="course-start">
-    تم بدء التحدي ب 12.9.2026
+    &#x062a;&#x0645; &#x0628;&#x062f;&#x0621; &#x0627;&#x0644;&#x062a;&#x062d;&#x062f;&#x064a; &#x0628; 12.9.2026
     <div class="course-countdown" id="courseCountdown"></div>
   </div>
 
   <div id="setupCard" class="card">
-    <h2 id="authTitle">🎀 دخول التحدي</h2>
+    <h2 id="authTitle">&#x1f380; &#x062f;&#x062e;&#x0648;&#x0644; &#x0627;&#x0644;&#x062a;&#x062d;&#x062f;&#x064a;</h2>
     <div class="row">
-      <label>اسم المستخدم</label>
-      <input type="text" id="nameInput" placeholder="مثلاً: يمامة" maxlength="24" autocomplete="username">
+      <label>&#x0627;&#x0633;&#x0645; &#x0627;&#x0644;&#x0645;&#x0633;&#x062a;&#x062e;&#x062f;&#x0645;</label>
+      <input type="text" id="nameInput" placeholder="&#x0645;&#x062b;&#x0644;&#x0627;&#x064b;: &#x064a;&#x0645;&#x0627;&#x0645;&#x0629;" maxlength="24" autocomplete="username">
     </div>
     <div class="row">
-      <label>كلمة المرور</label>
-      <input type="password" id="passwordInput" placeholder="أدخلي كلمة المرور" maxlength="64" autocomplete="current-password">
+      <label>&#x0643;&#x0644;&#x0645;&#x0629; &#x0627;&#x0644;&#x0645;&#x0631;&#x0648;&#x0631;</label>
+      <input type="password" id="passwordInput" placeholder="&#x0623;&#x062f;&#x062e;&#x0644;&#x064a; &#x0643;&#x0644;&#x0645;&#x0629; &#x0627;&#x0644;&#x0645;&#x0631;&#x0648;&#x0631;" maxlength="64" autocomplete="current-password">
     </div>
     <div class="row hidden" id="confirmPasswordRow">
-      <label>تأكيد كلمة المرور</label>
-      <input type="password" id="confirmPasswordInput" placeholder="أعيدي كتابة كلمة المرور" maxlength="64" autocomplete="new-password">
+      <label>&#x062a;&#x0623;&#x0643;&#x064a;&#x062f; &#x0643;&#x0644;&#x0645;&#x0629; &#x0627;&#x0644;&#x0645;&#x0631;&#x0648;&#x0631;</label>
+      <input type="password" id="confirmPasswordInput" placeholder="&#x0623;&#x0639;&#x064a;&#x062f;&#x064a; &#x0643;&#x062a;&#x0627;&#x0628;&#x0629; &#x0643;&#x0644;&#x0645;&#x0629; &#x0627;&#x0644;&#x0645;&#x0631;&#x0648;&#x0631;" maxlength="64" autocomplete="new-password">
     </div>
-    <label class="remember-row"><input type="checkbox" id="rememberPassword" checked> تذكريني على هذا الجهاز</label>
+    <label class="remember-row"><input type="checkbox" id="rememberPassword" checked> &#x062a;&#x0630;&#x0643;&#x0631;&#x064a;&#x0646;&#x064a; &#x0639;&#x0644;&#x0649; &#x0647;&#x0630;&#x0627; &#x0627;&#x0644;&#x062c;&#x0647;&#x0627;&#x0632;</label>
     <div class="auth-message" id="authMessage" role="alert" aria-live="polite"></div>
-    <button class="btn-main" id="joinBtn">دخول التحدي 💕</button>
+    <button class="btn-main" id="joinBtn">&#x062f;&#x062e;&#x0648;&#x0644; &#x0627;&#x0644;&#x062a;&#x062d;&#x062f;&#x064a; &#x1f495;</button>
   </div>
 
   <div class="copyright">Copy Rights 2026</div>
   <div id="mainCard" class="card hidden">
-    <h2 id="askTitle">☀️ هل درستي اليوم؟</h2>
+    <h2 id="askTitle">&#x2600;&#xfe0f; &#x0647;&#x0644; &#x062f;&#x0631;&#x0633;&#x062a;&#x064a; &#x0627;&#x0644;&#x064a;&#x0648;&#x0645;&#x061f;</h2>
 
     <div class="ask" id="askBox">
       <div class="ask-btns">
-        <button class="btn-yes" id="yesBtn">أكدي إنك درستِ ✅</button>
-        <button class="btn-no" id="noBtn">لسا 🙈</button>
+        <button class="btn-yes" id="yesBtn">&#x0623;&#x0643;&#x062f;&#x064a; &#x0625;&#x0646;&#x0643; &#x062f;&#x0631;&#x0633;&#x062a;&#x0650; &#x2705;</button>
+        <button class="btn-no" id="noBtn">&#x0644;&#x0633;&#x0627; &#x1f648;</button>
       </div>
     </div>
 
     <div class="reveal" id="revealBox">
-      <div class="emoji">🎉</div>
+      <div class="emoji">&#x1f389;</div>
       <div class="rname" id="revealName"></div>
       <div class="rmsg" id="revealMsg"></div>
       <div class="bar-track"><div class="bar-fill" id="revealBar" style="width:0%"></div></div>
     </div>
 
     <div class="already-done hidden" id="alreadyBox">
-      ✨ خلصتِ تأكيد اليوم، رجعي بكرا!
+      &#x2728; &#x062e;&#x0644;&#x0635;&#x062a;&#x0650; &#x062a;&#x0623;&#x0643;&#x064a;&#x062f; &#x0627;&#x0644;&#x064a;&#x0648;&#x0645;&#x060c; &#x0631;&#x062c;&#x0639;&#x064a; &#x0628;&#x0643;&#x0631;&#x0627;!
     </div>
 
     <div style="margin-top:18px;">
@@ -326,15 +326,15 @@
       <div class="badges" id="badgeRow"></div>
     </div>
 
-    <div class="switch-link"><a id="switchUser">مو أنا؟ بدّلي الاسم</a></div>
+    <div class="switch-link"><a id="switchUser">&#x0645;&#x0648; &#x0623;&#x0646;&#x0627;&#x061f; &#x0628;&#x062f;&#x0651;&#x0644;&#x064a; &#x0627;&#x0644;&#x0627;&#x0633;&#x0645;</a></div>
   </div>
 
   <div id="boardCard" class="card hidden">
-    <h2>🏆 ترتيب الرفقة</h2>
+    <h2>&#x1f3c6; &#x062a;&#x0631;&#x062a;&#x064a;&#x0628; &#x0627;&#x0644;&#x0631;&#x0641;&#x0642;&#x0629;</h2>
     <div class="top-card hidden" id="topCard">
-      <span class="crown">👑</span>
+      <span class="crown">&#x1f451;</span>
       <div>
-        <div class="ttitle">الأكثر التزاماً</div>
+        <div class="ttitle">&#x0627;&#x0644;&#x0623;&#x0643;&#x062b;&#x0631; &#x0627;&#x0644;&#x062a;&#x0632;&#x0627;&#x0645;&#x0627;&#x064b;</div>
         <div class="tname" id="topName"></div>
         <div class="tmeta" id="topMeta"></div>
       </div>
@@ -366,18 +366,18 @@ const revealBox = document.getElementById('revealBox');
 const alreadyBox = document.getElementById('alreadyBox');
 
 const BADGE_STEPS = [
-  {days:7,  emoji:"🌱", label:"٧ أيام"},
-  {days:14, emoji:"🌸", label:"١٤ يوم"},
-  {days:21, emoji:"⭐", label:"٢١ يوم"},
-  {days:30, emoji:"👑", label:"شهر كامل"}
+  {days:7,  emoji:"\u1f331", label:"\u0667 \u0623\u064a\u0627\u0645"},
+  {days:14, emoji:"\u1f338", label:"\u0661\u0664 \u064a\u0648\u0645"},
+  {days:21, emoji:"\u2b50", label:"\u0662\u0661 \u064a\u0648\u0645"},
+  {days:30, emoji:"\u1f451", label:"\u0634\u0647\u0631 \u0643\u0627\u0645\u0644"}
 ];
 
 const cheer = [
-  "ما شاء الله عليكِ! استمري كذا 🌟",
-  "يوم ثاني بالجيب! فخورة فيكِ 💪",
-  "شاطرة! خطوة أقرب لهدفك 🎯",
-  "أحسنتِ! الاستمرارية هي السر ✨",
-  "برافو! كل يوم بيفرق 💗"
+  "\u0645\u0627 \u0634\u0627\u0621 \u0627\u0644\u0644\u0647 \u0639\u0644\u064a\u0643\u0650! \u0627\u0633\u062a\u0645\u0631\u064a \u0643\u0630\u0627 \u1f31f",
+  "\u064a\u0648\u0645 \u062b\u0627\u0646\u064a \u0628\u0627\u0644\u062c\u064a\u0628! \u0641\u062e\u0648\u0631\u0629 \u0641\u064a\u0643\u0650 \u1f4aa",
+  "\u0634\u0627\u0637\u0631\u0629! \u062e\u0637\u0648\u0629 \u0623\u0642\u0631\u0628 \u0644\u0647\u062f\u0641\u0643 \u1f3af",
+  "\u0623\u062d\u0633\u0646\u062a\u0650! \u0627\u0644\u0627\u0633\u062a\u0645\u0631\u0627\u0631\u064a\u0629 \u0647\u064a \u0627\u0644\u0633\u0631 \u2728",
+  "\u0628\u0631\u0627\u0641\u0648! \u0643\u0644 \u064a\u0648\u0645 \u0628\u064a\u0641\u0631\u0642 \u1f497"
 ];
 
 function syriaTodayParts(){
@@ -393,7 +393,7 @@ function updateCourseCountdown(){
   const todayUtc = Date.UTC(year, month - 1, day);
   const endUtc = Date.UTC(2026, 9, 12);
   const remaining = Math.max(0, Math.round((endUtc - todayUtc) / (1000 * 60 * 60 * 24)));
-  courseCountdown.textContent = remaining === 1 ? "متبقي يوم واحد" : `متبقي ${remaining} يوم`;
+  courseCountdown.textContent = remaining === 1 ? "\u0645\u062a\u0628\u0642\u064a \u064a\u0648\u0645 \u0648\u0627\u062d\u062f" : `\u0645\u062a\u0628\u0642\u064a ${remaining} \u064a\u0648\u0645`;
 }
 function scheduleCourseCountdown(){
   updateCourseCountdown();
@@ -448,17 +448,17 @@ function rememberSavedLogin(name, passwordHash){
   }catch(e){}
 }
 function showFirstPasswordSetup(){
-  authTitle.textContent = '🔐 أنشئي كلمة مرورك';
+  authTitle.textContent = '\u1f510 \u0623\u0646\u0634\u0626\u064a \u0643\u0644\u0645\u0629 \u0645\u0631\u0648\u0631\u0643';
   confirmPasswordRow.classList.remove('hidden');
   passwordInput.autocomplete = 'new-password';
-  passwordInput.placeholder = 'أنشئي كلمة مرور';
+  passwordInput.placeholder = '\u0623\u0646\u0634\u0626\u064a \u0643\u0644\u0645\u0629 \u0645\u0631\u0648\u0631';
   confirmPasswordInput.required = true;
 }
 function showNormalLogin(){
-  authTitle.textContent = '🎀 دخول التحدي';
+  authTitle.textContent = '\u1f380 \u062f\u062e\u0648\u0644 \u0627\u0644\u062a\u062d\u062f\u064a';
   confirmPasswordRow.classList.add('hidden');
   passwordInput.autocomplete = 'current-password';
-  passwordInput.placeholder = 'أدخلي كلمة المرور';
+  passwordInput.placeholder = '\u0623\u062f\u062e\u0644\u064a \u0643\u0644\u0645\u0629 \u0627\u0644\u0645\u0631\u0648\u0631';
   confirmPasswordInput.required = false;
 }
 function resetAuthForm(){
@@ -494,7 +494,7 @@ function renderGrid(){
 function renderMeStats(){
   const done = days.filter(Boolean).length;
   document.getElementById('meName').textContent = currentName;
-  document.getElementById('meStat').textContent = done + " / " + TOTAL_DAYS + " يوم";
+  document.getElementById('meStat').textContent = done + " / " + TOTAL_DAYS + " \u064a\u0648\u0645";
   document.getElementById('meBar').style.width = Math.round((done/TOTAL_DAYS)*100) + "%";
   renderBadges(done);
 }
@@ -560,7 +560,7 @@ async function renderBoard(){
   const users = await listParticipants();
 
   if(!users.length){
-    document.getElementById('boardList').innerHTML = '<div class="empty-note">لسا محد انضم غيرك 🌱</div>';
+    document.getElementById('boardList').innerHTML = '<div class="empty-note">\u0644\u0633\u0627 \u0645\u062d\u062f \u0627\u0646\u0636\u0645 \u063a\u064a\u0631\u0643 \u1f331</div>';
     boardCard.classList.remove('hidden');
     return;
   }
@@ -576,13 +576,13 @@ async function renderBoard(){
   const topCard = document.getElementById('topCard');
   if(entries.length && entries[0].done > 0){
     topCard.classList.remove('hidden');
-    const leaders = entries.filter(e => e.done === entries[0].done); document.getElementById('topName').textContent = leaders.map(e => e.name).join('، ');
-    document.getElementById('topMeta').textContent = `${entries[0].done}/${TOTAL_DAYS} يوم — الأكثر التزاماً 💪`;
+    const leaders = entries.filter(e => e.done === entries[0].done); document.getElementById('topName').textContent = leaders.map(e => e.name).join('\u060c ');
+    document.getElementById('topMeta').textContent = `${entries[0].done}/${TOTAL_DAYS} \u064a\u0648\u0645 \u2014 \u0627\u0644\u0623\u0643\u062b\u0631 \u0627\u0644\u062a\u0632\u0627\u0645\u0627\u064b \u1f4aa`;
   } else {
     topCard.classList.add('hidden');
   }
 
-  const medals = ["🥇","🥈","🥉"];
+  const medals = ["\u1f947","\u1f948","\u1f949"];
   const scores = [...new Set(entries.map(e => e.done))];
   const list = document.getElementById('boardList');
   list.innerHTML = "";
@@ -620,7 +620,7 @@ async function confirmToday(){
 
   const done = days.filter(Boolean).length;
   document.getElementById('revealName').textContent = currentName;
-  document.getElementById('revealMsg').textContent = cheer[Math.floor(Math.random()*cheer.length)] + `  •  ${done}/${TOTAL_DAYS} يوم`;
+  document.getElementById('revealMsg').textContent = cheer[Math.floor(Math.random()*cheer.length)] + `  \u2022  ${done}/${TOTAL_DAYS} \u064a\u0648\u0645`;
   document.getElementById('revealBar').style.width = Math.round((done/TOTAL_DAYS)*100) + "%";
 
   askBox.classList.add('hidden');
@@ -636,20 +636,20 @@ async function enterChallenge(name, chosenStart, passwordHash){
   if(!cfg){ cfg = {startDate: chosenStart || todayStr()}; await saveConfig(cfg); }
   startDate = cfg.startDate;
   const user = await loadUser(name);
-  if(!user){ setAuthMessage('اسم المستخدم غير صحيح. تأكدي من كتابته كما هو.', 'error'); return false; }
+  if(!user){ setAuthMessage('\u0627\u0633\u0645 \u0627\u0644\u0645\u0633\u062a\u062e\u062f\u0645 \u063a\u064a\u0631 \u0635\u062d\u064a\u062d. \u062a\u0623\u0643\u062f\u064a \u0645\u0646 \u0643\u062a\u0627\u0628\u062a\u0647 \u0643\u0645\u0627 \u0647\u0648.', 'error'); return false; }
   if(!user.passwordHash){
     const password = passwordInput.value;
     const confirmation = confirmPasswordInput.value;
-    if(password.length < 4){ setAuthMessage('أنشئي كلمة مرور من 4 أحرف أو أكثر.', 'error'); return false; }
-    if(password !== confirmation){ setAuthMessage('كلمتا المرور غير متطابقتين.', 'error'); return false; }
+    if(password.length < 4){ setAuthMessage('\u0623\u0646\u0634\u0626\u064a \u0643\u0644\u0645\u0629 \u0645\u0631\u0648\u0631 \u0645\u0646 4 \u0623\u062d\u0631\u0641 \u0623\u0648 \u0623\u0643\u062b\u0631.', 'error'); return false; }
+    if(password !== confirmation){ setAuthMessage('\u0643\u0644\u0645\u062a\u0627 \u0627\u0644\u0645\u0631\u0648\u0631 \u063a\u064a\u0631 \u0645\u062a\u0637\u0627\u0628\u0642\u062a\u064a\u0646.', 'error'); return false; }
     passwordHash = await hashPassword(password);
     await saveUser(name, {...user, passwordHash});
-    setAuthMessage('تم إنشاء كلمة المرور وحفظها بنجاح.', 'success');
+    setAuthMessage('\u062a\u0645 \u0625\u0646\u0634\u0627\u0621 \u0643\u0644\u0645\u0629 \u0627\u0644\u0645\u0631\u0648\u0631 \u0648\u062d\u0641\u0638\u0647\u0627 \u0628\u0646\u062c\u0627\u062d.', 'success');
   } else {
     if(!passwordHash) passwordHash = await hashPassword(passwordInput.value);
     if(passwordHash !== user.passwordHash){
       forgetSavedLogin(name);
-      setAuthMessage('كلمة المرور غير صحيحة.', 'error'); return false;
+      setAuthMessage('\u0643\u0644\u0645\u0629 \u0627\u0644\u0645\u0631\u0648\u0631 \u063a\u064a\u0631 \u0635\u062d\u064a\u062d\u0629.', 'error'); return false;
     }
   }
   rememberSavedLogin(name, passwordHash);
@@ -661,13 +661,13 @@ async function enterChallenge(name, chosenStart, passwordHash){
 
 async function attemptLogin(){
   const name = nameInput.value.trim();
-  if(!name){ setAuthMessage('اكتبي اسم المستخدم أولاً.', 'error'); nameInput.focus(); return; }
+  if(!name){ setAuthMessage('\u0627\u0643\u062a\u0628\u064a \u0627\u0633\u0645 \u0627\u0644\u0645\u0633\u062a\u062e\u062f\u0645 \u0623\u0648\u0644\u0627\u064b.', 'error'); nameInput.focus(); return; }
   const user = await loadUser(name);
-  if(!user){ setAuthMessage('اسم المستخدم غير صحيح. تأكدي من كتابته كما هو.', 'error'); return; }
+  if(!user){ setAuthMessage('\u0627\u0633\u0645 \u0627\u0644\u0645\u0633\u062a\u062e\u062f\u0645 \u063a\u064a\u0631 \u0635\u062d\u064a\u062d. \u062a\u0623\u0643\u062f\u064a \u0645\u0646 \u0643\u062a\u0627\u0628\u062a\u0647 \u0643\u0645\u0627 \u0647\u0648.', 'error'); return; }
   if(!user.passwordHash){ showFirstPasswordSetup(); }
   const savedHash = (() => { try{return localStorage.getItem(savedLoginKey(name));}catch(e){return null;} })();
   if(user.passwordHash && savedHash === user.passwordHash){ await enterChallenge(name, null, savedHash); return; }
-  if(user.passwordHash && !passwordInput.value){ setAuthMessage('أدخلي كلمة المرور للمتابعة.', 'error'); passwordInput.focus(); return; }
+  if(user.passwordHash && !passwordInput.value){ setAuthMessage('\u0623\u062f\u062e\u0644\u064a \u0643\u0644\u0645\u0629 \u0627\u0644\u0645\u0631\u0648\u0631 \u0644\u0644\u0645\u062a\u0627\u0628\u0639\u0629.', 'error'); passwordInput.focus(); return; }
   await enterChallenge(name, null, null);
 }
 document.getElementById('joinBtn').addEventListener('click', attemptLogin);

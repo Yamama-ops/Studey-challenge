@@ -504,7 +504,6 @@ async function renderBoard(){
   const users = await listParticipants();
 
   if(!users.length){
-    groupTotalBox.textContent = "";
     document.getElementById('boardList').innerHTML = '<div class="empty-note">لسا محد انضم غيرك 🌱</div>';
     boardCard.classList.remove('hidden');
     return;

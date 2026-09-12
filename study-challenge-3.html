@@ -201,7 +201,24 @@
     text-align:center;font-size:0.85rem;color:var(--pink-deep);font-weight:800;
     margin-bottom:12px;
   }
-  .footer-note{color:var(--ink-dim);font-size:0.73rem;text-align:center;margin-top:8px;line-height:1.7;}
+  .course-start{
+    text-align:center;
+    color:var(--pink-deep);
+    font-size:0.86rem;
+    font-weight:800;
+    line-height:1.7;
+    margin:0 0 20px;
+  }
+  .course-countdown{
+    display:inline-block;
+    margin-top:4px;
+    padding:6px 12px;
+    border-radius:12px;
+    background:#FFF3F8;
+    color:var(--ink-dim);
+    font-size:0.78rem;
+    font-weight:700;
+  }
   .switch-link{text-align:center;margin-top:10px;}
   .switch-link a{color:var(--ink-dim);font-size:0.78rem;text-decoration:underline;cursor:pointer;}
   .already-done{
@@ -251,7 +268,10 @@
 <div class="wrap">
   <div class="brand"><span class="brand-dot"></span><span>Programming Advices</span></div>
   <h1>تحدي الدراسة 💫</h1>
-  <p class="sub">شهر كامل، كل يوم تأكيد صغير — وشوفي تقدمك مع رفقاتك 🌸</p>
+  <div class="course-start">
+    تم بدء الكورس ب 12.9.2026
+    <div class="course-countdown" id="courseCountdown"></div>
+  </div>
 
   <div id="setupCard" class="card">
     <h2>🎀 ابدأ التحدي</h2>
@@ -260,6 +280,7 @@
       <input type="text" id="nameInput" placeholder="مثلاً: يمامة" maxlength="24">
     </div>
     <button class="btn-main" id="joinBtn">دخول التحدي 💕</button>
+    <div class="footer-note">أول وحدة تحدد تاريخ البداية، والبنات الباقيات بينضموا على نفس التاريخ تلقائياً 🩷</div>
   </div>
 
   <div id="mainCard" class="card hidden">
@@ -322,6 +343,7 @@ const setupCard = document.getElementById('setupCard');
 const mainCard = document.getElementById('mainCard');
 const boardCard = document.getElementById('boardCard');
 const nameInput = document.getElementById('nameInput');
+const courseCountdown = document.getElementById('courseCountdown');
 const askBox = document.getElementById('askBox');
 const revealBox = document.getElementById('revealBox');
 const alreadyBox = document.getElementById('alreadyBox');
@@ -344,6 +366,22 @@ const cheer = [
 function todayStr(){
   const d = new Date();
   return d.toISOString().slice(0,10);
+}
+function updateCourseCountdown(){
+  const end = new Date(2026, 9, 12);
+  const now = new Date();
+  const remaining = Math.max(0, Math.ceil((end - now) / (1000 * 60 * 60 * 24)));
+  courseCountdown.textContent = remaining === 1 ? "متبقي يوم واحد" : `متبقي ${remaining} يوم`;
+}
+function scheduleCourseCountdown(){
+  updateCourseCountdown();
+  const now = new Date();
+  const nextMidnight = new Date(now);
+  nextMidnight.setHours(24, 0, 0, 0);
+  setTimeout(() => {
+    updateCourseCountdown();
+    scheduleCourseCountdown();
+  }, nextMidnight - now);
 }
 function dayIndexFromStart(start){
   const s = new Date(start + "T00:00:00");
@@ -594,6 +632,7 @@ document.getElementById('switchUser').addEventListener('click', () => {
 
 (async function init(){
   await loadConfig();
+  scheduleCourseCountdown();
 })();
 </script>
 </body>

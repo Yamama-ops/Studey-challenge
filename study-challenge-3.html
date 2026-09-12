@@ -228,21 +228,20 @@
   .badge{
     width:56px;
     display:flex;flex-direction:column;align-items:center;gap:4px;
-    opacity:1;
+    opacity:0.32;
   }
   .badge.earned{opacity:1;}
   .badge .bemoji{
     width:44px;height:44px;border-radius:50%;
     display:flex;align-items:center;justify-content:center;
     font-size:1.3rem;
-    background:linear-gradient(135deg, #ffd1df, #f47b9d);border:2px solid rgba(255,255,255,.9);
-    box-shadow:0 4px 12px rgba(190,35,86,.32);
+    background:#FFF0F5;border:1.5px solid var(--line);
   }
   .badge.earned .bemoji{
     background:linear-gradient(135deg, var(--gold), var(--peach));
     border-color:transparent;
   }
-  .badge .blabel{font-size:0.68rem;color:#fff;font-weight:900;text-align:center;text-shadow:0 1px 3px rgba(106,14,46,.55);}
+  .badge .blabel{font-size:0.62rem;color:var(--ink-dim);font-weight:700;text-align:center;}
   .badge.earned .blabel{color:var(--pink-deep);}
 
   /* top performer highlight */

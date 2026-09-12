@@ -363,28 +363,24 @@ const cheer = [
   "برافو! كل يوم بيفرق 💗"
 ];
 
+function syriaTodayParts(){
+  const parts = new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Damascus", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
+  return Object.fromEntries(parts.filter(p => p.type !== "literal").map(p => [p.type, p.value]));
+}
 function todayStr(){
-  const d = new Date();
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
+  const p = syriaTodayParts();
+  return `${p.year}-${p.month}-${p.day}`;
 }
 function updateCourseCountdown(){
-  const end = new Date(2026, 9, 12);
-  const now = new Date();
-  const remaining = Math.max(0, Math.ceil((end - now) / (1000 * 60 * 60 * 24)));
+  const [year, month, day] = todayStr().split("-").map(Number);
+  const todayUtc = Date.UTC(year, month - 1, day);
+  const endUtc = Date.UTC(2026, 9, 12);
+  const remaining = Math.max(0, Math.round((endUtc - todayUtc) / (1000 * 60 * 60 * 24)));
   courseCountdown.textContent = remaining === 1 ? "متبقي يوم واحد" : `متبقي ${remaining} يوم`;
 }
 function scheduleCourseCountdown(){
   updateCourseCountdown();
-  const now = new Date();
-  const nextMidnight = new Date(now);
-  nextMidnight.setHours(24, 0, 0, 0);
-  setTimeout(() => {
-    updateCourseCountdown();
-    scheduleCourseCountdown();
-  }, nextMidnight - now);
+  setInterval(updateCourseCountdown, 30000);
 }
 function dayIndexFromStart(start){
   const s = new Date(start + "T00:00:00");

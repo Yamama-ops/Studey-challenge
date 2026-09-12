@@ -269,7 +269,7 @@
   <div class="brand"><span class="brand-dot"></span><span>Programming Advices</span></div>
   <h1>تحدي الدراسة 💫</h1>
   <div class="course-start">
-    تم بدء الكورس ب 12.9.2026
+    تم بدء التحدي ب 12.9.2026
     <div class="course-countdown" id="courseCountdown"></div>
   </div>
 
@@ -280,6 +280,7 @@
       <input type="text" id="nameInput" placeholder="مثلاً: يمامة" maxlength="24">
     </div>
     <button class="btn-main" id="joinBtn">دخول التحدي 💕</button>
+    <div class="footer-note">أول وحدة تحدد تاريخ البداية، والبنات الباقيات بينضموا على نفس التاريخ تلقائياً 🩷</div>
   </div>
 
   <div id="mainCard" class="card hidden">
@@ -364,7 +365,10 @@ const cheer = [
 
 function todayStr(){
   const d = new Date();
-  return d.toISOString().slice(0,10);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 function updateCourseCountdown(){
   const end = new Date(2026, 9, 12);

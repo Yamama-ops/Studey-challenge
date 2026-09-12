@@ -228,21 +228,22 @@
   .badge{
     width:56px;
     display:flex;flex-direction:column;align-items:center;gap:4px;
-    opacity:0.32;
+    opacity:1;
   }
-  .badge.earned{opacity:1;}
   .badge .bemoji{
-    width:44px;height:44px;border-radius:50%;
+    width:46px;height:46px;border-radius:50%;
     display:flex;align-items:center;justify-content:center;
-    font-size:1.3rem;
-    background:#FFF0F5;border:1.5px solid var(--line);
+    font-size:1.35rem;
+    border:2px solid #fff;
+    color:#fff;
+    box-shadow:0 4px 10px rgba(100,35,55,.25);
   }
-  .badge.earned .bemoji{
-    background:linear-gradient(135deg, var(--gold), var(--peach));
-    border-color:transparent;
-  }
-  .badge .blabel{font-size:0.62rem;color:var(--ink-dim);font-weight:700;text-align:center;}
-  .badge.earned .blabel{color:var(--pink-deep);}
+  .badge:nth-child(1) .bemoji{background:linear-gradient(135deg,#ffe57a,#e6a91d);}
+  .badge:nth-child(2) .bemoji{background:linear-gradient(135deg,#f5f7fa,#9da8b3);}
+  .badge:nth-child(3) .bemoji{background:linear-gradient(135deg,#f3b27a,#a9572d);}
+  .badge:nth-child(4) .bemoji{background:linear-gradient(135deg,#d9b7ff,#8750c7);}
+  .badge .blabel{font-size:0.66rem;color:#fff;font-weight:900;text-align:center;text-shadow:0 1px 3px rgba(80,20,40,.55);}
+  .badge.earned .bemoji{box-shadow:0 0 0 3px rgba(255,255,255,.65),0 5px 14px rgba(100,35,55,.35);}
 
   /* top performer highlight */
   .top-card{

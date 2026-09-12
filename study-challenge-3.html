@@ -196,11 +196,6 @@
   .board-row .bfill{height:100%;background:linear-gradient(90deg, var(--peach), var(--pink));}
   .board-row .bmeta{font-size:0.76rem;color:var(--ink-dim);width:40px;text-align:left;}
   .empty-note{color:var(--ink-dim);font-size:0.85rem;text-align:center;padding:8px 0;}
-  .group-total{
-    background:#FFF3F8;border-radius:14px;padding:10px 14px;
-    text-align:center;font-size:0.85rem;color:var(--pink-deep);font-weight:800;
-    margin-bottom:12px;
-  }
   .course-start{
     text-align:center;
     color:var(--pink-deep);
@@ -326,7 +321,6 @@
         <div class="tmeta" id="topMeta"></div>
       </div>
     </div>
-    <div class="group-total" id="groupTotal"></div>
     <div id="boardList"></div>
   </div>
 </div>
@@ -508,7 +502,7 @@ async function persist(){
 
 async function renderBoard(){
   const users = await listParticipants();
-  const groupTotalBox = document.getElementById('groupTotal');
+
   if(!users.length){
     groupTotalBox.textContent = "";
     document.getElementById('boardList').innerHTML = '<div class="empty-note">لسا محد انضم غيرك 🌱</div>';
@@ -521,19 +515,20 @@ async function renderBoard(){
   }));
   entries.sort((a,b) => b.done - a.done);
 
-  const groupTotal = entries.reduce((sum, e) => sum + e.done, 0);
-  groupTotalBox.textContent = `🌸 مجموع أيام الرفقة كلها: ${groupTotal} يوم`;
+
+
 
   const topCard = document.getElementById('topCard');
   if(entries.length && entries[0].done > 0){
     topCard.classList.remove('hidden');
-    document.getElementById('topName').textContent = entries[0].name;
-    document.getElementById('topMeta').textContent = `${entries[0].done}/${TOTAL_DAYS} يوم — ما فوّتت كتير 💪`;
+    const leaders = entries.filter(e => e.done === entries[0].done); document.getElementById('topName').textContent = leaders.map(e => e.name).join('، ');
+    document.getElementById('topMeta').textContent = `${entries[0].done}/${TOTAL_DAYS} يوم — الأكثر التزاماً 💪`;
   } else {
     topCard.classList.add('hidden');
   }
 
   const medals = ["🥇","🥈","🥉"];
+  const scores = [...new Set(entries.map(e => e.done))];
   const list = document.getElementById('boardList');
   list.innerHTML = "";
   entries.forEach((e, idx) => {
@@ -541,7 +536,7 @@ async function renderBoard(){
     row.className = 'board-row' + (e.name === currentName ? ' me' : '');
     const pct = Math.round((e.done/TOTAL_DAYS)*100);
     row.innerHTML = `
-      <span class="rank">${medals[idx] || (idx+1)}</span>
+      <span class="rank">${medals[scores.indexOf(e.done)] || (scores.indexOf(e.done)+1)}</span>
       <span class="bname">${e.name}</span>
       <span class="btrack"><span class="bfill" style="width:${pct}%"></span></span>
       <span class="bmeta">${e.done}/${TOTAL_DAYS}</span>

@@ -259,10 +259,6 @@
       <label>اسمك</label>
       <input type="text" id="nameInput" placeholder="مثلاً: يمامة" maxlength="24">
     </div>
-    <div class="row">
-      <label>تاريخ بداية التحدي</label>
-      <input type="date" id="startInput">
-    </div>
     <button class="btn-main" id="joinBtn">دخول التحدي 💕</button>
     <div class="footer-note">أول وحدة تحدد تاريخ البداية، والبنات الباقيات بينضموا على نفس التاريخ تلقائياً 🩷</div>
   </div>
@@ -327,7 +323,6 @@ const setupCard = document.getElementById('setupCard');
 const mainCard = document.getElementById('mainCard');
 const boardCard = document.getElementById('boardCard');
 const nameInput = document.getElementById('nameInput');
-const startInput = document.getElementById('startInput');
 const askBox = document.getElementById('askBox');
 const revealBox = document.getElementById('revealBox');
 const alreadyBox = document.getElementById('alreadyBox');
@@ -579,7 +574,7 @@ async function enterChallenge(name, chosenStart){
 document.getElementById('joinBtn').addEventListener('click', async () => {
   const name = nameInput.value.trim();
   if(!name){ nameInput.focus(); return; }
-  const chosenStart = startInput.value || null;
+  const chosenStart = null;
   await enterChallenge(name, chosenStart);
 });
 
@@ -599,12 +594,7 @@ document.getElementById('switchUser').addEventListener('click', () => {
 });
 
 (async function init(){
-  const cfg = await loadConfig();
-  if(cfg){
-    startInput.value = cfg.startDate;
-  } else {
-    startInput.value = todayStr();
-  }
+  await loadConfig();
 })();
 </script>
 </body>

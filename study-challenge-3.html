@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Programming Advices | تحدي الدراسة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Marhey:wght@400;600;700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<style>
+  :root{
+    --bg:#FFF3F8;
+    --panel:#FFFFFF;
+    --pink:#FF6FA0;
+    --pink-deep:#E8548A;
+    --lav:#B79CE8;
+    --peach:#FFC9A8;
+    --ink:#5B4358;
+    --ink-dim:#A98CA3;
+    --line:#F6DCE9;
+    --gold:#FFC24B;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 12% 8%, #FFE1EE 0%, transparent 40%),
+      radial-gradient(circle at 88% 92%, #EFE3FF 0%, transparent 45%),
+      var(--bg);
+    color:var(--ink);
+    font-family:'Tajawal', sans-serif;
+    min-height:100vh;
+    padding:20px 14px 60px;
+  }
+  .wrap{max-width:480px;margin:0 auto;}
+
+  .brand{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    margin-bottom:6px;
+  }
+  .brand-dot{width:8px;height:8px;border-radius:50%;background:var(--pink);}
+  .brand span{
+    font-size:0.72rem;letter-spacing:0.3px;color:var(--ink-dim);
+    font-weight:700;
+  }
+
+  h1{
+    font-family:'Marhey', sans-serif;
+    font-weight:700;
+    font-size:2rem;
+    margin:2px 0 4px;
+    text-align:center;
+    color:var(--pink-deep);
+  }
+  .sub{color:var(--ink-dim);font-size:0.9rem;margin-bottom:20px;line-height:1.6;text-align:center;}
+
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:20px;
+    margin-bottom:16px;
+    box-shadow:0 6px 20px rgba(232,84,138,0.06);
+  }
+  .card h2{
+    font-family:'Marhey', sans-serif;
+    font-size:1.2rem;
+    margin:0 0 14px;
+    color:var(--pink-deep);
+    font-weight:700;
+    display:flex;align-items:center;gap:6px;
+  }
+  label{display:block;font-size:0.82rem;color:var(--ink-dim);margin-bottom:6px;font-weight:700;}
+  input[type=text], input[type=date]{
+    width:100%;
+    background:#FFFAFC;
+    border:1.5px solid var(--line);
+    color:var(--ink);
+    padding:12px 14px;
+    border-radius:14px;
+    font-family:'Tajawal', sans-serif;
+    font-size:0.95rem;
+  }
+  input:focus{outline:none;border-color:var(--pink);}
+  .row{margin-bottom:14px;}
+  button{
+    font-family:'Tajawal', sans-serif;
+    font-weight:800;
+    font-size:0.95rem;
+    border:none;
+    border-radius:16px;
+    padding:13px 16px;
+    cursor:pointer;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  button:active{transform:scale(0.96);}
+  .btn-main{
+    background:linear-gradient(135deg, var(--pink), var(--pink-deep));
+    color:#fff;width:100%;
+    box-shadow:0 6px 16px rgba(232,84,138,0.35);
+  }
+  .btn-ghost{background:transparent;color:var(--ink-dim);border:1.5px solid var(--line);}
+  .hidden{display:none !important;}
+
+  /* daily confirm */
+  .ask{
+    text-align:center;
+    padding:6px 0 4px;
+  }
+  .ask .q{
+    font-family:'Marhey', sans-serif;
+    font-size:1.15rem;
+    color:var(--ink);
+    margin-bottom:16px;
+  }
+  .ask-btns{display:flex;gap:10px;}
+  .btn-yes{
+    flex:1;
+    background:linear-gradient(135deg, #8DE1B0, #59C98A);
+    color:#124024;
+    box-shadow:0 6px 16px rgba(89,201,138,0.3);
+  }
+  .btn-no{
+    flex:1;
+    background:#FFF0F5;
+    color:var(--ink-dim);
+    border:1.5px solid var(--line);
+  }
+
+  /* reveal card */
+  .reveal{
+    display:none;
+    text-align:center;
+    padding:8px 0 4px;
+  }
+  .reveal.show{display:block; animation:pop .45s ease;}
+  @keyframes pop{
+    0%{transform:scale(0.85); opacity:0;}
+    60%{transform:scale(1.04); opacity:1;}
+    100%{transform:scale(1);}
+  }
+  .reveal .emoji{font-size:2.4rem;margin-bottom:6px;}
+  .reveal .rname{
+    font-family:'Marhey', sans-serif;
+    font-size:1.3rem;
+    color:var(--pink-deep);
+    margin-bottom:2px;
+  }
+  .reveal .rmsg{color:var(--ink-dim);font-size:0.88rem;margin-bottom:14px;}
+
+  .progress-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
+  .progress-head .name{font-size:0.95rem;font-weight:800;color:var(--ink);}
+  .progress-head .stat{font-size:0.85rem;color:var(--pink-deep);font-weight:800;}
+  .bar-track{height:10px;background:#FBE7F0;border-radius:6px;overflow:hidden;margin-bottom:16px;}
+  .bar-fill{height:100%;background:linear-gradient(90deg, var(--peach), var(--pink));border-radius:6px;transition:width .4s ease;}
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(6, 1fr);
+    gap:6px;
+  }
+  .day{
+    aspect-ratio:1;
+    display:flex;align-items:center;justify-content:center;
+    background:#FFF6FA;
+    border:1px solid var(--line);
+    border-radius:10px;
+    font-size:0.7rem;
+    font-weight:800;
+    color:var(--ink-dim);
+    position:relative;
+  }
+  .day.today{border-color:var(--pink); color:var(--pink-deep); border-width:2px;}
+  .day.done{
+    background:linear-gradient(135deg, var(--peach), var(--pink));
+    color:#fff;
+    border-color:transparent;
+  }
+  .day.done::after{content:"💗"; position:absolute; font-size:0.6rem; top:-5px; left:-3px;}
+  .day.future{opacity:0.35;}
+
+  .board-row{
+    display:flex;align-items:center;gap:10px;
+    padding:10px 2px;
+    border-bottom:1px solid var(--line);
+  }
+  .board-row:last-child{border-bottom:none;}
+  .board-row .rank{
+    width:26px;text-align:center;font-size:0.95rem;
+  }
+  .board-row.me{background:#FFF3F8; border-radius:12px;}
+  .board-row.me .bname{color:var(--pink-deep);}
+  .board-row .bname{flex:1;font-weight:700;font-size:0.9rem;color:var(--ink);}
+  .board-row .btrack{width:60px;height:6px;background:#FBE7F0;border-radius:3px;overflow:hidden;}
+  .board-row .bfill{height:100%;background:linear-gradient(90deg, var(--peach), var(--pink));}
+  .board-row .bmeta{font-size:0.76rem;color:var(--ink-dim);width:40px;text-align:left;}
+  .empty-note{color:var(--ink-dim);font-size:0.85rem;text-align:center;padding:8px 0;}
+  .group-total{
+    background:#FFF3F8;border-radius:14px;padding:10px 14px;
+    text-align:center;font-size:0.85rem;color:var(--pink-deep);font-weight:800;
+    margin-bottom:12px;
+  }
+  .footer-note{color:var(--ink-dim);font-size:0.73rem;text-align:center;margin-top:8px;line-height:1.7;}
+  .switch-link{text-align:center;margin-top:10px;}
+  .switch-link a{color:var(--ink-dim);font-size:0.78rem;text-decoration:underline;cursor:pointer;}
+  .already-done{
+    text-align:center;color:var(--ink-dim);font-size:0.88rem;
+    background:#FFF3F8;border-radius:14px;padding:14px;
+  }
+
+  /* badges */
+  .badges{
+    display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap;
+  }
+  .badge{
+    width:56px;
+    display:flex;flex-direction:column;align-items:center;gap:4px;
+    opacity:0.32;
+  }
+  .badge.earned{opacity:1;}
+  .badge .bemoji{
+    width:44px;height:44px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.3rem;
+    background:#FFF0F5;border:1.5px solid var(--line);
+  }
+  .badge.earned .bemoji{
+    background:linear-gradient(135deg, var(--gold), var(--peach));
+    border-color:transparent;
+  }
+  .badge .blabel{font-size:0.62rem;color:var(--ink-dim);font-weight:700;text-align:center;}
+  .badge.earned .blabel{color:var(--pink-deep);}
+
+  /* top performer highlight */
+  .top-card{
+    background:linear-gradient(135deg, #FFF3F8, #FFEAF6);
+    border:1.5px solid var(--line);
+    border-radius:16px;
+    padding:14px 16px;
+    display:flex;align-items:center;gap:12px;
+    margin-bottom:14px;
+  }
+  .top-card .crown{font-size:1.7rem;}
+  .top-card .ttitle{font-size:0.72rem;color:var(--ink-dim);font-weight:700;margin-bottom:2px;}
+  .top-card .tname{font-family:'Marhey', sans-serif;font-size:1.05rem;color:var(--pink-deep);}
+  .top-card .tmeta{font-size:0.78rem;color:var(--ink-dim);margin-top:1px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand"><span class="brand-dot"></span><span>Programming Advices</span></div>
+  <h1>تحدي الدراسة 💫</h1>
+  <p class="sub">شهر كامل، كل يوم تأكيد صغير — وشوفي تقدمك مع رفقاتك 🌸</p>
+
+  <div id="setupCard" class="card">
+    <h2>🎀 ابدأ التحدي</h2>
+    <div class="row">
+      <label>اسمك</label>
+      <input type="text" id="nameInput" placeholder="مثلاً: يمامة" maxlength="24">
+    </div>
+    <div class="row">
+      <label>تاريخ بداية التحدي</label>
+      <input type="date" id="startInput">
+    </div>
+    <button class="btn-main" id="joinBtn">دخول التحدي 💕</button>
+    <div class="footer-note">أول وحدة تحدد تاريخ البداية، والبنات الباقيات بينضموا على نفس التاريخ تلقائياً 🩷</div>
+  </div>
+
+  <div id="mainCard" class="card hidden">
+    <h2 id="askTitle">☀️ هل درستي اليوم؟</h2>
+
+    <div class="ask" id="askBox">
+      <div class="ask-btns">
+        <button class="btn-yes" id="yesBtn">أكدي إنك درستِ ✅</button>
+        <button class="btn-no" id="noBtn">لسا 🙈</button>
+      </div>
+    </div>
+
+    <div class="reveal" id="revealBox">
+      <div class="emoji">🎉</div>
+      <div class="rname" id="revealName"></div>
+      <div class="rmsg" id="revealMsg"></div>
+      <div class="bar-track"><div class="bar-fill" id="revealBar" style="width:0%"></div></div>
+    </div>
+
+    <div class="already-done hidden" id="alreadyBox">
+      ✨ خلصتِ تأكيد اليوم، رجعي بكرا!
+    </div>
+
+    <div style="margin-top:18px;">
+      <div class="progress-head">
+        <span class="name" id="meName"></span>
+        <span class="stat" id="meStat"></span>
+      </div>
+      <div class="bar-track"><div class="bar-fill" id="meBar" style="width:0%"></div></div>
+      <div class="grid" id="dayGrid"></div>
+      <div class="badges" id="badgeRow"></div>
+    </div>
+
+    <div class="switch-link"><a id="switchUser">مو أنا؟ بدّلي الاسم</a></div>
+  </div>
+
+  <div id="boardCard" class="card hidden">
+    <h2>🏆 ترتيب الرفقة</h2>
+    <div class="top-card hidden" id="topCard">
+      <span class="crown">👑</span>
+      <div>
+        <div class="ttitle">الأكثر التزاماً</div>
+        <div class="tname" id="topName"></div>
+        <div class="tmeta" id="topMeta"></div>
+      </div>
+    </div>
+    <div class="group-total" id="groupTotal"></div>
+    <div id="boardList"></div>
+  </div>
+</div>
+
+<script>
+const TOTAL_DAYS = 30;
+
+let currentName = null;
+let startDate = null;
+let days = new Array(TOTAL_DAYS).fill(false);
+
+const setupCard = document.getElementById('setupCard');
+const mainCard = document.getElementById('mainCard');
+const boardCard = document.getElementById('boardCard');
+const nameInput = document.getElementById('nameInput');
+const startInput = document.getElementById('startInput');
+const askBox = document.getElementById('askBox');
+const revealBox = document.getElementById('revealBox');
+const alreadyBox = document.getElementById('alreadyBox');
+
+const BADGE_STEPS = [
+  {days:7,  emoji:"🌱", label:"٧ أيام"},
+  {days:14, emoji:"🌸", label:"١٤ يوم"},
+  {days:21, emoji:"⭐", label:"٢١ يوم"},
+  {days:30, emoji:"👑", label:"شهر كامل"}
+];
+
+const cheer = [
+  "ما شاء الله عليكِ! استمري كذا 🌟",
+  "يوم ثاني بالجيب! فخورة فيكِ 💪",
+  "شاطرة! خطوة أقرب لهدفك 🎯",
+  "أحسنتِ! الاستمرارية هي السر ✨",
+  "برافو! كل يوم بيفرق 💗"
+];
+
+function todayStr(){
+  const d = new Date();
+  return d.toISOString().slice(0,10);
+}
+function dayIndexFromStart(start){
+  const s = new Date(start + "T00:00:00");
+  const t = new Date(todayStr() + "T00:00:00");
+  return Math.floor((t - s) / (1000*60*60*24));
+}
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDo2zVHtgmFFCEgnTLw5A9K_0gY9bPiQ64",
+  authDomain: "prog-27961.firebaseapp.com",
+  projectId: "prog-27961",
+  storageBucket: "prog-27961.firebasestorage.app",
+  messagingSenderId: "562954020310",
+  appId: "1:562954020310:web:76c3b7ec1bdd2a4c6f7077"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+async function loadConfig(){
+  try{
+    const doc = await db.collection('config').doc('main').get();
+    if(doc.exists) return doc.data();
+  }catch(e){}
+  return null;
+}
+async function saveConfig(cfg){
+  try{ await db.collection('config').doc('main').set(cfg); }catch(e){}
+}
+async function loadUser(name){
+  try{
+    const doc = await db.collection('users').doc(name).get();
+    if(doc.exists) return doc.data();
+  }catch(e){}
+  return null;
+}
+async function saveUser(name, data){
+  try{ await db.collection('users').doc(name).set(data); }catch(e){}
+}
+async function listParticipants(){
+  try{
+    const snap = await db.collection('users').get();
+    return snap.docs.map(d => d.data());
+  }catch(e){}
+  return [];
+}
+
+function renderGrid(){
+  const grid = document.getElementById('dayGrid');
+  grid.innerHTML = "";
+  const curIdx = dayIndexFromStart(startDate);
+  for(let i=0;i<TOTAL_DAYS;i++){
+    const cell = document.createElement('div');
+    cell.className = 'day';
+    cell.textContent = i+1;
+    if(days[i]) cell.classList.add('done');
+    if(i === curIdx) cell.classList.add('today');
+    if(i > curIdx) cell.classList.add('future');
+    grid.appendChild(cell);
+  }
+}
+
+function renderMeStats(){
+  const done = days.filter(Boolean).length;
+  document.getElementById('meName').textContent = currentName;
+  document.getElementById('meStat').textContent = done + " / " + TOTAL_DAYS + " يوم";
+  document.getElementById('meBar').style.width = Math.round((done/TOTAL_DAYS)*100) + "%";
+  renderBadges(done);
+}
+
+function renderBadges(done){
+  const row = document.getElementById('badgeRow');
+  row.innerHTML = "";
+  BADGE_STEPS.forEach(step => {
+    const earned = done >= step.days;
+    const el = document.createElement('div');
+    el.className = 'badge' + (earned ? ' earned' : '');
+    el.innerHTML = `<div class="bemoji">${step.emoji}</div><div class="blabel">${step.label}</div>`;
+    row.appendChild(el);
+  });
+}
+
+function celebrate(){
+  try{
+    if(navigator.vibrate) navigator.vibrate([40, 30, 60]);
+  }catch(e){}
+  try{
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const notes = [880, 1108, 1318];
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.0001, ctx.currentTime + i*0.12);
+      gain.gain.linearRampToValueAtTime(0.12, ctx.currentTime + i*0.12 + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + i*0.12 + 0.25);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start(ctx.currentTime + i*0.12);
+      osc.stop(ctx.currentTime + i*0.12 + 0.3);
+    });
+  }catch(e){}
+}
+
+function refreshAskState(){
+  const curIdx = dayIndexFromStart(startDate);
+  const inRange = curIdx >= 0 && curIdx < TOTAL_DAYS;
+  revealBox.classList.remove('show');
+  if(!inRange){
+    askBox.classList.add('hidden');
+    alreadyBox.classList.add('hidden');
+    return;
+  }
+  if(days[curIdx]){
+    askBox.classList.add('hidden');
+    alreadyBox.classList.remove('hidden');
+  }else{
+    askBox.classList.remove('hidden');
+    alreadyBox.classList.add('hidden');
+  }
+}
+
+async function persist(){
+  await saveUser(currentName, {name: currentName, startDate, days});
+  renderBoard();
+}
+
+async function renderBoard(){
+  const users = await listParticipants();
+  const groupTotalBox = document.getElementById('groupTotal');
+  if(!users.length){
+    groupTotalBox.textContent = "";
+    document.getElementById('boardList').innerHTML = '<div class="empty-note">لسا محد انضم غيرك 🌱</div>';
+    boardCard.classList.remove('hidden');
+    return;
+  }
+  const entries = users.map(d => ({
+    name: d.name,
+    done: (d.days || []).filter(Boolean).length
+  }));
+  entries.sort((a,b) => b.done - a.done);
+
+  const groupTotal = entries.reduce((sum, e) => sum + e.done, 0);
+  groupTotalBox.textContent = `🌸 مجموع أيام الرفقة كلها: ${groupTotal} يوم`;
+
+  const topCard = document.getElementById('topCard');
+  if(entries.length && entries[0].done > 0){
+    topCard.classList.remove('hidden');
+    document.getElementById('topName').textContent = entries[0].name;
+    document.getElementById('topMeta').textContent = `${entries[0].done}/${TOTAL_DAYS} يوم — ما فوّتت كتير 💪`;
+  } else {
+    topCard.classList.add('hidden');
+  }
+
+  const medals = ["🥇","🥈","🥉"];
+  const list = document.getElementById('boardList');
+  list.innerHTML = "";
+  entries.forEach((e, idx) => {
+    const row = document.createElement('div');
+    row.className = 'board-row' + (e.name === currentName ? ' me' : '');
+    const pct = Math.round((e.done/TOTAL_DAYS)*100);
+    row.innerHTML = `
+      <span class="rank">${medals[idx] || (idx+1)}</span>
+      <span class="bname">${e.name}</span>
+      <span class="btrack"><span class="bfill" style="width:${pct}%"></span></span>
+      <span class="bmeta">${e.done}/${TOTAL_DAYS}</span>
+    `;
+    list.appendChild(row);
+  });
+  boardCard.classList.remove('hidden');
+}
+
+let boardRefreshTimer = null;
+function startBoardAutoRefresh(){
+  if(boardRefreshTimer) clearInterval(boardRefreshTimer);
+  boardRefreshTimer = setInterval(() => {
+    if(currentName) renderBoard();
+  }, 6000);
+}
+
+async function confirmToday(){
+  const curIdx = dayIndexFromStart(startDate);
+  if(curIdx < 0 || curIdx >= TOTAL_DAYS) return;
+  days[curIdx] = true;
+  await persist();
+  renderGrid();
+  renderMeStats();
+  celebrate();
+
+  const done = days.filter(Boolean).length;
+  document.getElementById('revealName').textContent = currentName;
+  document.getElementById('revealMsg').textContent = cheer[Math.floor(Math.random()*cheer.length)] + `  •  ${done}/${TOTAL_DAYS} يوم`;
+  document.getElementById('revealBar').style.width = Math.round((done/TOTAL_DAYS)*100) + "%";
+
+  askBox.classList.add('hidden');
+  revealBox.classList.add('show');
+  setTimeout(() => {
+    revealBox.classList.remove('show');
+    alreadyBox.classList.remove('hidden');
+  }, 2200);
+}
+
+async function enterChallenge(name, chosenStart){
+  let cfg = await loadConfig();
+  if(!cfg){
+    cfg = {startDate: chosenStart || todayStr()};
+    await saveConfig(cfg);
+  }
+  startDate = cfg.startDate;
+
+  let user = await loadUser(name);
+  if(!user){
+    user = {name, startDate, days: new Array(TOTAL_DAYS).fill(false)};
+    await saveUser(name, user);
+  }
+  currentName = user.name;
+  days = user.days;
+
+  setupCard.classList.add('hidden');
+  mainCard.classList.remove('hidden');
+  renderGrid();
+  renderMeStats();
+  refreshAskState();
+  renderBoard();
+  startBoardAutoRefresh();
+}
+
+document.getElementById('joinBtn').addEventListener('click', async () => {
+  const name = nameInput.value.trim();
+  if(!name){ nameInput.focus(); return; }
+  const chosenStart = startInput.value || null;
+  await enterChallenge(name, chosenStart);
+});
+
+document.getElementById('yesBtn').addEventListener('click', confirmToday);
+document.getElementById('noBtn').addEventListener('click', () => {
+  document.getElementById('revealName').textContent = "";
+  askBox.classList.add('hidden');
+  setTimeout(() => { askBox.classList.remove('hidden'); }, 10);
+});
+
+document.getElementById('switchUser').addEventListener('click', () => {
+  mainCard.classList.add('hidden');
+  boardCard.classList.add('hidden');
+  setupCard.classList.remove('hidden');
+  nameInput.value = "";
+  nameInput.focus();
+});
+
+(async function init(){
+  const cfg = await loadConfig();
+  if(cfg){
+    startInput.value = cfg.startDate;
+  } else {
+    startInput.value = todayStr();
+  }
+})();
+</script>
+</body>
+</html>

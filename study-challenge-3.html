@@ -366,6 +366,7 @@
 
 <script>
 const TOTAL_DAYS = 30;
+const OFFICIAL_START_DATE = "2026-09-12";
 
 let currentName = null;
 let startDate = null;
@@ -424,9 +425,12 @@ function scheduleCourseCountdown(){
   setInterval(updateCourseCountdown, 30000);
 }
 function dayIndexFromStart(start){
-  const s = new Date(start + "T00:00:00");
-  const t = new Date(todayStr() + "T00:00:00");
-  return Math.floor((t - s) / (1000*60*60*24));
+  const startValue = /^\d{4}-\d{2}-\d{2}$/.test(start || '') ? start : OFFICIAL_START_DATE;
+  const [sy, sm, sd] = startValue.split('-').map(Number);
+  const [ty, tm, td] = todayStr().split('-').map(Number);
+  const startUtc = Date.UTC(sy, sm - 1, sd);
+  const todayUtc = Date.UTC(ty, tm - 1, td);
+  return Math.floor((todayUtc - startUtc) / (1000*60*60*24));
 }
 
 const firebaseConfig = {
@@ -678,7 +682,7 @@ async function confirmToday(){
 async function enterChallenge(name, chosenStart, passwordHash){
   let cfg = await loadConfig();
   if(!cfg){ cfg = {startDate: chosenStart || todayStr()}; await saveConfig(cfg); }
-  startDate = cfg.startDate;
+  startDate = OFFICIAL_START_DATE;
   const user = await loadUser(name);
   if(!user){ setAuthMessage('\u0627\u0633\u0645 \u0627\u0644\u0645\u0633\u062a\u062e\u062f\u0645 \u063a\u064a\u0631 \u0635\u062d\u064a\u062d. \u062a\u0623\u0643\u062f\u064a \u0645\u0646 \u0643\u062a\u0627\u0628\u062a\u0647 \u0643\u0645\u0627 \u0647\u0648.', 'error'); return false; }
   if(!user.passwordHash){
@@ -715,7 +719,7 @@ async function attemptLogin(){
     if(existing){ setAuthMessage('\u0647\u0630\u0627 \u0627\u0633\u0645 \u0627\u0644\u0645\u0633\u062a\u062e\u062f\u0645 \u0645\u0633\u062c\u0644 \u0645\u0633\u0628\u0642\u0627\u064b. \u0627\u0633\u062a\u062e\u062f\u0645\u064a Log in.', 'error'); return; }
     const passwordHash = await hashPassword(password);
     const cfg = await loadConfig();
-    const newUser = {name, startDate:(cfg && cfg.startDate) || todayStr(), days:new Array(TOTAL_DAYS).fill(false), passwordHash};
+    const newUser = {name, startDate:OFFICIAL_START_DATE, days:new Array(TOTAL_DAYS).fill(false), passwordHash};
     await saveUser(name, newUser);
     rememberSavedLogin(name, passwordHash);
     setAuthMessage('\u062a\u0645 \u0625\u0646\u0634\u0627\u0621 \u062d\u0633\u0627\u0628\u0643 \u0628\u0646\u062c\u0627\u062d.', 'success');

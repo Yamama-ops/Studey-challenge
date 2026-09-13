@@ -187,8 +187,13 @@
   }
   .board-row:last-child{border-bottom:none;}
   .board-row .rank{
-    width:26px;text-align:center;font-size:0.95rem;
+    width:30px;min-width:30px;text-align:center;font-size:1.35rem;
+    line-height:1;
   }
+  .board-row .rank.empty{font-size:.85rem;color:rgba(255,255,255,.45);}
+  .board-row .rank.gold{filter:drop-shadow(0 2px 3px rgba(230,169,29,.55));}
+  .board-row .rank.silver{filter:drop-shadow(0 2px 3px rgba(157,168,179,.55));}
+  .board-row .rank.bronze{filter:drop-shadow(0 2px 3px rgba(169,87,45,.55));}
   .board-row.me{background:#FFF3F8; border-radius:12px;}
   .board-row.me .bname{color:var(--pink-deep);}
   .board-row .bname{flex:1;font-weight:700;font-size:0.9rem;color:var(--ink);}
@@ -591,8 +596,8 @@ async function renderBoard(){
     topCard.classList.add('hidden');
   }
 
-  const medals = ["\u1f947","\u1f948","\u1f949"];
-  const scores = [...new Set(entries.map(e => e.done))];
+  const medals = ["\u{1F947}","\u{1F948}","\u{1F949}"];
+  const medalClasses = ["gold","silver","bronze"];
   const list = document.getElementById('boardList');
   list.innerHTML = "";
   entries.forEach((e, idx) => {
@@ -600,7 +605,7 @@ async function renderBoard(){
     row.className = 'board-row' + (e.name === currentName ? ' me' : '');
     const pct = Math.round((e.done/TOTAL_DAYS)*100);
     row.innerHTML = `
-      <span class="rank">${medals[scores.indexOf(e.done)] || (scores.indexOf(e.done)+1)}</span>
+      <span class="rank ${idx < 3 ? medalClasses[idx] : 'empty'}">${idx < 3 ? medals[idx] : ''}</span>
       <span class="bname">${e.name}</span>
       <span class="btrack"><span class="bfill" style="width:${pct}%"></span></span>
       <span class="bmeta">${e.done}/${TOTAL_DAYS}</span>

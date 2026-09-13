@@ -228,7 +228,14 @@
   .badge{
     width:56px;
     display:flex;flex-direction:column;align-items:center;gap:4px;
+    opacity:.28;
+    filter:saturate(.35);
+    transition:opacity .25s ease, filter .25s ease, transform .25s ease;
+  }
+  .badge.earned{
     opacity:1;
+    filter:saturate(1);
+    transform:translateY(-2px);
   }
   .badge .bemoji{
     width:46px;height:46px;border-radius:50%;
@@ -244,6 +251,7 @@
   .badge:nth-child(4) .bemoji{background:linear-gradient(135deg,#d9b7ff,#8750c7);}
   .badge .blabel{font-size:0.66rem;color:#fff;font-weight:900;text-align:center;text-shadow:0 1px 3px rgba(80,20,40,.55);}
   .badge.earned .bemoji{box-shadow:0 0 0 3px rgba(255,255,255,.65),0 5px 14px rgba(100,35,55,.35);}
+  .badge:not(.earned) .bemoji{box-shadow:none;}
 
   /* top performer highlight */
   .top-card{

@@ -598,14 +598,16 @@ async function renderBoard(){
 
   const medals = ["\u{1F947}","\u{1F948}","\u{1F949}"];
   const medalClasses = ["gold","silver","bronze"];
+  const scoreGroups = [...new Set(entries.map(e => e.done))];
   const list = document.getElementById('boardList');
   list.innerHTML = "";
-  entries.forEach((e, idx) => {
+  entries.forEach((e) => {
     const row = document.createElement('div');
     row.className = 'board-row' + (e.name === currentName ? ' me' : '');
     const pct = Math.round((e.done/TOTAL_DAYS)*100);
+    const medalIndex = scoreGroups.indexOf(e.done);
     row.innerHTML = `
-      <span class="rank ${idx < 3 ? medalClasses[idx] : 'empty'}">${idx < 3 ? medals[idx] : ''}</span>
+      <span class="rank ${medalIndex < 3 ? medalClasses[medalIndex] : 'empty'}">${medalIndex < 3 ? medals[medalIndex] : ''}</span>
       <span class="bname">${e.name}</span>
       <span class="btrack"><span class="bfill" style="width:${pct}%"></span></span>
       <span class="bmeta">${e.done}/${TOTAL_DAYS}</span>

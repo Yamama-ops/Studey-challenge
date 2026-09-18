@@ -206,8 +206,8 @@
   .board-row.me{background:#FFF3F8; border-radius:12px;}
   .board-row.me .bname{color:var(--pink-deep);}
   .board-row .bname{flex:1;font-weight:700;font-size:0.9rem;color:var(--ink);}
-  .board-row .btrack{width:60px;height:6px;background:#FBE7F0;border-radius:3px;overflow:hidden;}
-  .board-row .bfill{height:100%;background:linear-gradient(90deg, var(--peach), var(--pink));}
+  .board-row .worship-meta{min-width:58px;width:58px;height:30px;display:flex;align-items:center;justify-content:center;gap:3px;background:linear-gradient(135deg,#fff3b0,#ffd45c);border:1px solid rgba(196,137,24,.35);border-radius:9px;color:#765014;font-size:.78rem;font-weight:900;box-shadow:0 3px 8px rgba(180,124,20,.2);}
+  .board-row .worship-meta .star{font-size:1rem;line-height:1;}
   .board-row .bmeta{font-size:0.76rem;color:var(--ink-dim);width:40px;text-align:left;}
   .empty-note{color:var(--ink-dim);font-size:0.85rem;text-align:center;padding:8px 0;}
   .course-start{
@@ -679,7 +679,8 @@ async function renderBoard(){
   }
   const entries = users.map(d => ({
     name: d.name,
-    done: (d.days || []).filter(Boolean).length
+    done: (d.days || []).filter(Boolean).length,
+    worshipCount: Object.values(d.worship || {}).reduce((sum, item) => sum + (item.salawat ? 1 : 0) + (item.kahf ? 1 : 0), 0)
   }));
   entries.sort((a,b) => b.done - a.done);
 
@@ -708,7 +709,7 @@ async function renderBoard(){
     row.innerHTML = `
       <span class="rank ${medalIndex < 3 ? medalClasses[medalIndex] : 'empty'}">${medalIndex < 3 ? medals[medalIndex] : ''}</span>
       <span class="bname">${e.name}</span>
-      <span class="btrack"><span class="bfill" style="width:${pct}%"></span></span>
+      <span class="worship-meta" title="نجوم العبادات"><span>${e.worshipCount}</span><span class="star">&#x2b50;</span></span>
       <span class="bmeta">${e.done}/${TOTAL_DAYS}</span>
     `;
     list.appendChild(row);

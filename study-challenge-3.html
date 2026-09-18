@@ -301,7 +301,7 @@
     <div class="course-countdown" id="courseCountdown"></div>
   </div>
 
-  <div id="setupCard" class="card">
+  <div id="setupCard" class="card" style="display:none">
     <h2 id="authTitle">&#x1f380; &#x062f;&#x062e;&#x0648;&#x0644; &#x0627;&#x0644;&#x062a;&#x062d;&#x062f;&#x064a;</h2>
     <div class="auth-modes" role="tablist" aria-label="&#x0646;&#x0648;&#x0639; &#x0627;&#x0644;&#x062f;&#x062e;&#x0648;&#x0644;">
       <button type="button" class="auth-mode active" id="loginMode">Log in</button>
@@ -825,7 +825,7 @@ document.getElementById('noBtn').addEventListener('click', () => {
 document.getElementById('switchUser').addEventListener('click', () => {
   mainCard.classList.add('hidden');
   boardCard.classList.add('hidden');
-  setupCard.classList.remove('hidden');
+  setupCard.classList.remove('hidden'); setupCard.style.display = '';
   resetAuthForm();
   nameInput.focus();
 });
@@ -854,6 +854,7 @@ document.getElementById('switchUser').addEventListener('click', () => {
         await enterChallenge(savedName, null, savedHash);
       }else clearActiveLogin();
     }
+    if(!currentName) setupCard.style.display = '';
   }catch(e){}
 })();
 </script>

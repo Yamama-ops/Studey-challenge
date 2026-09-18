@@ -844,8 +844,10 @@ document.getElementById('switchUser').addEventListener('click', () => {
     }
     if(savedName && savedHash){
       const user = await loadUser(savedName);
-      if(user && user.passwordHash === savedHash) await enterChallenge(savedName, null, savedHash);
-      else clearActiveLogin();
+      if(user && (!user.passwordHash || user.passwordHash === savedHash)){
+        if(!user.passwordHash) await saveUser(savedName, {...user, passwordHash:savedHash});
+        await enterChallenge(savedName, null, savedHash);
+      }else clearActiveLogin();
     }
   }catch(e){}
 })();

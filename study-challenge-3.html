@@ -352,11 +352,11 @@
         <span class="stat" id="meStat"></span>
       </div>
       <div class="bar-track"><div class="bar-fill" id="meBar" style="width:0%"></div></div>
-      <div class="friday-box hidden" id="fridayBox">
-        <div class="friday-title">&#x1f54a; عبادات الجمعة</div>
-        <div class="friday-sub">نور بين الجمعتين</div>
+      <div class="friday-box" id="fridayBox">
+        <div class="friday-title" id="worshipTitle">&#x1f54a; عبادات اليوم</div>
+        <div class="friday-sub" id="worshipSub">خطوات صغيرة بنور كبير</div>
         <label class="worship-option" id="salawatOption"><input type="checkbox" id="salawatCheck"> الصلاة على النبي ﷺ</label>
-        <label class="worship-option" id="kahfOption"><input type="checkbox" id="kahfCheck"> قراءة سورة الكهف</label>
+        <label class="worship-option" id="kahfOption"><input type="checkbox" id="kahfCheck"> <span id="secondWorshipLabel">الورد القرآني</span></label>
         <div class="worship-stars" id="worshipStars">نجوم تحقيق العبادات: 0 &#x2b50;</div>
       </div>
       <div class="grid" id="dayGrid"></div>
@@ -548,25 +548,30 @@ async function listParticipants(){
   return [];
 }
 
-function currentFridayKey(){
-  const today = new Date(todayStr() + 'T00:00:00Z');
-  const day = today.getUTCDay();
-  if(day !== 5) return null;
+function currentWorshipKey(){
   return todayStr();
 }
-function worshipCount(){ return Object.values(worship || {}).reduce((sum, item) => sum + (item.salawat ? 1 : 0) + (item.kahf ? 1 : 0), 0); }
+function isFriday(){
+  const today = new Date(todayStr() + 'T00:00:00Z');
+  return today.getUTCDay() === 5;
+}
+function worshipCount(){ return Object.values(worship || {}).reduce((sum, item) => sum + (item.salawat ? 1 : 0) + (item.kahf ? 1 : 0) + (item.quran ? 1 : 0), 0); }
 function updateWorshipStyles(){
   salawatOption.classList.toggle('done', salawatCheck.checked);
   kahfOption.classList.toggle('done', kahfCheck.checked);
 }
 function renderFridayWorship(){
-  const key = currentFridayKey();
-  const visible = !!key;
-  fridayBox.classList.toggle('hidden', !visible);
-  if(!visible) return;
+  const key = currentWorshipKey();
+  const friday = isFriday();
+  const names = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  const dayName = names[new Date(key + 'T00:00:00Z').getUTCDay()];
+  document.getElementById('worshipTitle').textContent = friday ? '🕊 عبادات الجمعة' : `🕊 عبادات يوم ${dayName}`;
+  document.getElementById('worshipSub').textContent = friday ? 'نور بين الجمعتين' : 'خطوات صغيرة بنور كبير';
+  document.getElementById('secondWorshipLabel').textContent = friday ? 'قراءة سورة الكهف' : 'الورد القرآني';
   const record = worship[key] || {};
   salawatCheck.checked = !!record.salawat;
-  kahfCheck.checked = !!record.kahf;
+  kahfCheck.checked = friday ? !!record.kahf : !!record.quran;
+  kahfOption.dataset.type = friday ? 'kahf' : 'quran';
   updateWorshipStyles();
   worshipStars.textContent = `نجوم تحقيق العبادات: ${worshipCount()} \u2b50`;
 }
@@ -582,7 +587,7 @@ function worshipCelebration(){
   }catch(e){}
 }
 async function toggleWorship(type, checked){
-  const key=currentFridayKey(); if(!key) return;
+  const key=currentWorshipKey();
   const record={...(worship[key]||{})}; const was=!!record[type]; record[type]=checked; worship[key]=record;
   await saveUser(currentName,{name:currentName,startDate,days,worship,passwordHash:currentPasswordHash});
   updateWorshipStyles(); worshipStars.textContent=`نجوم تحقيق العبادات: ${worshipCount()} \u2b50`;
@@ -809,7 +814,7 @@ document.getElementById('joinBtn').addEventListener('click', attemptLogin);
 [nameInput, passwordInput, confirmPasswordInput].forEach(input => input.addEventListener('keydown', e => { if(e.key === 'Enter') attemptLogin(); }));
 
 salawatCheck.addEventListener('change', e => toggleWorship('salawat', e.target.checked));
-  kahfCheck.addEventListener('change', e => toggleWorship('kahf', e.target.checked));
+kahfCheck.addEventListener('change', e => toggleWorship(kahfOption.dataset.type || 'quran', e.target.checked));
 document.getElementById('yesBtn').addEventListener('click', confirmToday);
 document.getElementById('noBtn').addEventListener('click', () => {
   document.getElementById('revealName').textContent = "";

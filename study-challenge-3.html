@@ -385,6 +385,7 @@ const TOTAL_DAYS = 30;
 const OFFICIAL_START_DATE = "2026-09-12";
 
 let currentName = null;
+let currentPasswordHash = null;
 let startDate = null;
 let days = new Array(TOTAL_DAYS).fill(false);
 let worship = {};
@@ -497,8 +498,7 @@ function clearActiveLogin(){ try{ localStorage.removeItem(ACTIVE_LOGIN_KEY); }ca
 function forgetSavedLogin(name){ try{ localStorage.removeItem(savedLoginKey(name)); }catch(e){} }
 function rememberSavedLogin(name, passwordHash){
   try{
-    if(rememberPassword.checked) localStorage.setItem(savedLoginKey(name), passwordHash);
-    else forgetSavedLogin(name);
+    localStorage.setItem(savedLoginKey(name), passwordHash);
   }catch(e){}
 }
 function showFirstPasswordSetup(){
@@ -584,7 +584,7 @@ function worshipCelebration(){
 async function toggleWorship(type, checked){
   const key=currentFridayKey(); if(!key) return;
   const record={...(worship[key]||{})}; const was=!!record[type]; record[type]=checked; worship[key]=record;
-  await saveUser(currentName,{name:currentName,startDate,days,worship});
+  await saveUser(currentName,{name:currentName,startDate,days,worship,passwordHash:currentPasswordHash});
   updateWorshipStyles(); worshipStars.textContent=`نجوم تحقيق العبادات: ${worshipCount()} \u2b50`;
   if(checked && !was) worshipCelebration();
 }
@@ -665,7 +665,7 @@ function refreshAskState(){
 }
 
 async function persist(){
-  await saveUser(currentName, {name: currentName, startDate, days, worship});
+  await saveUser(currentName, {name: currentName, startDate, days, worship, passwordHash: currentPasswordHash});
   renderBoard();
 }
 
@@ -770,7 +770,7 @@ async function enterChallenge(name, chosenStart, passwordHash){
   }
   rememberSavedLogin(name, passwordHash);
   saveActiveLogin(name, passwordHash);
-  currentName = user.name; days = user.days || new Array(TOTAL_DAYS).fill(false); worship = user.worship || {};
+  currentName = user.name; currentPasswordHash = user.passwordHash || passwordHash; days = user.days || new Array(TOTAL_DAYS).fill(false); worship = user.worship || {};
   setupCard.classList.add('hidden'); mainCard.classList.remove('hidden');
   renderGrid(); renderMeStats(); renderFridayWorship(); refreshAskState(); renderBoard(); startBoardAutoRefresh();
   return true;

@@ -467,7 +467,10 @@ async function hashPassword(password){
   return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 function setAuthMessage(text, type=''){ authMessage.textContent = text; authMessage.className = 'auth-message' + (type ? ' ' + type : ''); }
+const ACTIVE_LOGIN_KEY = 'studyChallengeActiveLogin';
 function savedLoginKey(name){ return 'studyChallengeLogin:' + name; }
+function saveActiveLogin(name, passwordHash){ try{ localStorage.setItem(ACTIVE_LOGIN_KEY, JSON.stringify({name, passwordHash})); }catch(e){} }
+function clearActiveLogin(){ try{ localStorage.removeItem(ACTIVE_LOGIN_KEY); }catch(e){} }
 function forgetSavedLogin(name){ try{ localStorage.removeItem(savedLoginKey(name)); }catch(e){} }
 function rememberSavedLogin(name, passwordHash){
   try{
@@ -701,6 +704,7 @@ async function enterChallenge(name, chosenStart, passwordHash){
     }
   }
   rememberSavedLogin(name, passwordHash);
+  saveActiveLogin(name, passwordHash);
   currentName = user.name; days = user.days || new Array(TOTAL_DAYS).fill(false);
   setupCard.classList.add('hidden'); mainCard.classList.remove('hidden');
   renderGrid(); renderMeStats(); refreshAskState(); renderBoard(); startBoardAutoRefresh();
@@ -758,12 +762,23 @@ document.getElementById('switchUser').addEventListener('click', () => {
   await loadConfig();
   scheduleCourseCountdown();
   try{
-    const saved = Object.keys(localStorage).find(k => k.startsWith('studyChallengeLogin:'));
-    if(saved){
-      const name = saved.slice('studyChallengeLogin:'.length);
-      const hash = localStorage.getItem(saved);
-      const user = await loadUser(name);
-      if(user && user.passwordHash === hash) await enterChallenge(name, null, hash);
+    let savedName = null;
+    let savedHash = null;
+    const active = JSON.parse(localStorage.getItem(ACTIVE_LOGIN_KEY) || 'null');
+    if(active && active.name && active.passwordHash){
+      savedName = active.name;
+      savedHash = active.passwordHash;
+    }else{
+      const saved = Object.keys(localStorage).find(k => k.startsWith('studyChallengeLogin:'));
+      if(saved){
+        savedName = saved.slice('studyChallengeLogin:'.length);
+        savedHash = localStorage.getItem(saved);
+      }
+    }
+    if(savedName && savedHash){
+      const user = await loadUser(savedName);
+      if(user && user.passwordHash === savedHash) await enterChallenge(savedName, null, savedHash);
+      else clearActiveLogin();
     }
   }catch(e){}
 })();

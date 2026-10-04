@@ -612,6 +612,13 @@ function renderMonthlyHistory(){
     return `<div class="monthly-row"><strong>${monthName(key)}</strong><span>📖 ${item.studyDays || 0} أيام · ⭐ ${item.worshipStars || 0}${badges}</span></div>`;
   }).join('');
 }
+function toggleMonthlyHistory(){
+  const isOpening = monthlyHistoryDetails.classList.contains('hidden');
+  monthlyHistoryDetails.classList.toggle('hidden', !isOpening);
+  monthlyHistoryToggle.setAttribute('aria-expanded', String(isOpening));
+  monthlyHistoryToggle.textContent = isOpening ? 'إخفاء سجل التطور' : 'انقري لمعرفة تطورك';
+  if(isOpening) renderMonthlyHistory();
+}
 async function saveUser(name, data){
   try{ await db.collection('users').doc(name).set(data); }catch(e){}
 }

@@ -401,6 +401,7 @@ let startDate = null;
 let days = new Array(TOTAL_DAYS).fill(false);
 let worship = {};
 let monthlyHistory = {};
+let monthlyHistoryBase = {};
 
 const setupCard = document.getElementById('setupCard');
 const mainCard = document.getElementById('mainCard');
@@ -452,10 +453,21 @@ function todayStr(){
   const p = syriaTodayParts();
   return `${p.year}-${p.month}-${p.day}`;
 }
+function addDays(dateStr, amount){
+  const [y,m,d] = dateStr.split('-').map(Number);
+  return new Date(Date.UTC(y, m - 1, d + amount)).toISOString().slice(0,10);
+}
+function challengeCycleStartForDate(dateStr, configuredStart){
+  let cycleStart = /^\d{4}-\d{2}-\d{2}$/.test(configuredStart || '') ? configuredStart : OFFICIAL_START_DATE;
+  while(dateStr >= addDays(cycleStart, TOTAL_DAYS)) cycleStart = addDays(cycleStart, TOTAL_DAYS);
+  return cycleStart;
+}
 function updateCourseCountdown(){
   const [year, month, day] = todayStr().split("-").map(Number);
   const todayUtc = Date.UTC(year, month - 1, day);
-  const endUtc = Date.UTC(2026, 9, 12);
+  const cycleStart = startDate || challengeCycleStartForDate(todayStr(), OFFICIAL_START_DATE);
+  const [ey, em, ed] = addDays(cycleStart, TOTAL_DAYS).split('-').map(Number);
+  const endUtc = Date.UTC(ey, em - 1, ed);
   const remaining = Math.max(0, Math.round((endUtc - todayUtc) / (1000 * 60 * 60 * 24)));
   courseCountdown.textContent = remaining === 1 ? "\u0645\u062a\u0628\u0642\u064a \u064a\u0648\u0645 \u0648\u0627\u062d\u062f" : `\u0645\u062a\u0628\u0642\u064a ${remaining} \u064a\u0648\u0645`;
 }
@@ -562,16 +574,16 @@ function monthName(key){
   const [y,m] = key.split('-').map(Number);
   return new Intl.DateTimeFormat('ar', {month:'long', year:'numeric', timeZone:'UTC'}).format(new Date(Date.UTC(y,m-1,1)));
 }
-function createMonthlyHistory(){
-  const result = {...(monthlyHistory || {})};
+function createMonthlyHistory(sourceStartDate = startDate, sourceDays = days, sourceWorship = worship, existingHistory = monthlyHistory){
+  const result = {...(existingHistory || {})};
   const study = {};
-  (days || []).forEach((done, index) => {
+  (sourceDays || []).forEach((done, index) => {
     if(!done) return;
-    const key = monthKeyFromDate(challengeDateForIndex(index));
+    const key = monthKeyFromDate(addDays(sourceStartDate || OFFICIAL_START_DATE, index));
     if(key) study[key] = (study[key] || 0) + 1;
   });
   const worshipTotals = {};
-  Object.entries(worship || {}).forEach(([date, record]) => {
+  Object.entries(sourceWorship || {}).forEach(([date, record]) => {
     const key = monthKeyFromDate(date);
     if(!key) return;
     const stars = ['salawat','kahf','quran'].reduce((n, type) => n + (record && record[type] ? 1 : 0), 0);
@@ -594,8 +606,21 @@ function createMonthlyHistory(){
   return result;
 }
 function buildUserData(){
-  monthlyHistory = createMonthlyHistory();
-  return {name: currentName, startDate, days, worship, monthlyHistory, passwordHash: currentPasswordHash};
+  const currentHistory = createMonthlyHistory(startDate, days, worship, {});
+  const mergedHistory = {...(monthlyHistoryBase || {})};
+  Object.entries(currentHistory).forEach(([key, item]) => {
+    const base = monthlyHistoryBase[key] || {};
+    const studyDays = (base.studyDays || 0) + (item.studyDays || 0);
+    const worshipStars = (base.worshipStars || 0) + (item.worshipStars || 0);
+    mergedHistory[key] = {
+      ...item,
+      studyDays,
+      worshipStars,
+      badges: BADGE_STEPS.filter(step => studyDays >= step.days).map(step => step.label)
+    };
+  });
+  monthlyHistory = mergedHistory;
+  return {name: currentName, startDate, days, worship, monthlyHistory, monthlyHistoryBase, passwordHash: currentPasswordHash};
 }
 function renderMonthlyHistory(){
   const chart = document.getElementById('monthlyChart');
@@ -606,12 +631,7 @@ function renderMonthlyHistory(){
     ['2026-11', 'نوفمبر'],
     ['2026-12', 'ديسمبر']
   ];
-  const studyDays = Object.fromEntries(monthLabels.map(([key]) => [key, 0]));
-  (days || []).forEach((done, index) => {
-    if(!done) return;
-    const key = challengeDateForIndex(index).slice(0, 7);
-    if(key in studyDays) studyDays[key] += 1;
-  });
+  const studyDays = Object.fromEntries(monthLabels.map(([key]) => [key, (monthlyHistory[key] && monthlyHistory[key].studyDays) || 0]));
   chart.innerHTML = monthLabels.map(([key, label]) => {
     const count = studyDays[key];
     const height = Math.max(3, Math.round((count / TOTAL_DAYS) * 100));
@@ -634,6 +654,25 @@ async function listParticipants(){
     return snap.docs.map(d => d.data());
   }catch(e){}
   return [];
+}
+async function rolloverAllUsers(newStartDate){
+  const users = await listParticipants();
+  await Promise.all(users.filter(user => user.startDate !== newStartDate).map(user => {
+    const archivedHistory = createMonthlyHistory(
+      user.startDate || OFFICIAL_START_DATE,
+      user.days || new Array(TOTAL_DAYS).fill(false),
+      user.worship || {},
+      user.monthlyHistory || {}
+    );
+    return saveUser(user.name, {
+      ...user,
+      startDate: newStartDate,
+      days: new Array(TOTAL_DAYS).fill(false),
+      worship: {},
+      monthlyHistory: archivedHistory,
+      monthlyHistoryBase: archivedHistory
+    });
+  }));
 }
 
 function currentWorshipKey(){
@@ -773,8 +812,8 @@ async function renderBoard(){
   }
   const entries = users.map(d => ({
     name: d.name,
-    done: (d.days || []).filter(Boolean).length,
-    worshipCount: Object.values(d.worship || {}).reduce((sum, item) => sum + (item.salawat ? 1 : 0) + (item.kahf ? 1 : 0), 0)
+    done: d.startDate === startDate ? (d.days || []).filter(Boolean).length : 0,
+    worshipCount: d.startDate === startDate ? Object.values(d.worship || {}).reduce((sum, item) => sum + (item.salawat ? 1 : 0) + (item.kahf ? 1 : 0), 0) : 0
   }));
   entries.sort((a,b) => b.done - a.done);
 
@@ -843,8 +882,10 @@ async function confirmToday(){
 
 async function enterChallenge(name, chosenStart, passwordHash){
   let cfg = await loadConfig();
-  if(!cfg){ cfg = {startDate: chosenStart || todayStr()}; await saveConfig(cfg); }
-  startDate = OFFICIAL_START_DATE;
+  if(!cfg){ cfg = {startDate: chosenStart || OFFICIAL_START_DATE}; await saveConfig(cfg); }
+  startDate = challengeCycleStartForDate(todayStr(), cfg.startDate);
+  if(cfg.startDate !== startDate){ cfg = {...cfg, startDate}; await saveConfig(cfg); }
+  await rolloverAllUsers(startDate);
   const user = await loadUser(name);
   if(!user){ setAuthMessage('\u0627\u0633\u0645 \u0627\u0644\u0645\u0633\u062a\u062e\u062f\u0645 \u063a\u064a\u0631 \u0635\u062d\u064a\u062d. \u062a\u0623\u0643\u062f\u064a \u0645\u0646 \u0643\u062a\u0627\u0628\u062a\u0647 \u0643\u0645\u0627 \u0647\u0648.', 'error'); return false; }
   if(!user.passwordHash){
@@ -864,7 +905,26 @@ async function enterChallenge(name, chosenStart, passwordHash){
   }
   rememberSavedLogin(name, passwordHash);
   saveActiveLogin(name, passwordHash);
-  currentName = user.name; currentPasswordHash = user.passwordHash || passwordHash; days = user.days || new Array(TOTAL_DAYS).fill(false); worship = user.worship || {}; monthlyHistory = user.monthlyHistory || {};
+  const previousStartDate = user.startDate || OFFICIAL_START_DATE;
+  const previousDays = user.days || new Array(TOTAL_DAYS).fill(false);
+  const previousWorship = user.worship || {};
+  currentName = user.name; currentPasswordHash = user.passwordHash || passwordHash;
+  monthlyHistory = createMonthlyHistory(previousStartDate, previousDays, previousWorship, user.monthlyHistory || {});
+  const isNewChallenge = previousStartDate !== startDate;
+  if(isNewChallenge){
+    monthlyHistoryBase = monthlyHistory;
+  }else if(user.monthlyHistoryBase){
+    monthlyHistoryBase = user.monthlyHistoryBase;
+  }else{
+    const currentCycleHistory = createMonthlyHistory(previousStartDate, previousDays, previousWorship, {});
+    monthlyHistoryBase = Object.fromEntries(Object.entries(user.monthlyHistory || {}).map(([key, item]) => [key, {
+      ...item,
+      studyDays: Math.max(0, (item.studyDays || 0) - ((currentCycleHistory[key] && currentCycleHistory[key].studyDays) || 0)),
+      worshipStars: Math.max(0, (item.worshipStars || 0) - ((currentCycleHistory[key] && currentCycleHistory[key].worshipStars) || 0))
+    }]));
+  }
+  days = isNewChallenge ? new Array(TOTAL_DAYS).fill(false) : previousDays;
+  worship = isNewChallenge ? {} : previousWorship;
   await saveUser(currentName, buildUserData());
   setupCard.classList.add('hidden'); mainCard.classList.remove('hidden');
   renderGrid(); renderMeStats(); renderFridayWorship(); renderMonthlyHistory(); refreshAskState(); renderBoard(); startBoardAutoRefresh();
@@ -883,7 +943,7 @@ async function attemptLogin(){
     if(existing){ setAuthMessage('\u0647\u0630\u0627 \u0627\u0633\u0645 \u0627\u0644\u0645\u0633\u062a\u062e\u062f\u0645 \u0645\u0633\u062c\u0644 \u0645\u0633\u0628\u0642\u0627\u064b. \u0627\u0633\u062a\u062e\u062f\u0645\u064a Log in.', 'error'); return; }
     const passwordHash = await hashPassword(password);
     const cfg = await loadConfig();
-    const newUser = {name, startDate:OFFICIAL_START_DATE, days:new Array(TOTAL_DAYS).fill(false), passwordHash};
+    const newUser = {name, startDate:challengeCycleStartForDate(todayStr(), (cfg && cfg.startDate) || OFFICIAL_START_DATE), days:new Array(TOTAL_DAYS).fill(false), passwordHash};
     await saveUser(name, newUser);
     rememberSavedLogin(name, passwordHash);
     setAuthMessage('\u062a\u0645 \u0625\u0646\u0634\u0627\u0621 \u062d\u0633\u0627\u0628\u0643 \u0628\u0646\u062c\u0627\u062d.', 'success');

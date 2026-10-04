@@ -882,8 +882,8 @@ async function confirmToday(){
 
 async function enterChallenge(name, chosenStart, passwordHash){
   let cfg = await loadConfig();
-  if(!cfg){ cfg = {startDate: chosenStart || OFFICIAL_START_DATE}; await saveConfig(cfg); }
-  startDate = challengeCycleStartForDate(todayStr(), cfg.startDate);
+  if(!cfg){ cfg = {}; }
+  startDate = challengeCycleStartForDate(todayStr(), OFFICIAL_START_DATE);
   if(cfg.startDate !== startDate){ cfg = {...cfg, startDate}; await saveConfig(cfg); }
   await rolloverAllUsers(startDate);
   const user = await loadUser(name);
@@ -943,7 +943,7 @@ async function attemptLogin(){
     if(existing){ setAuthMessage('\u0647\u0630\u0627 \u0627\u0633\u0645 \u0627\u0644\u0645\u0633\u062a\u062e\u062f\u0645 \u0645\u0633\u062c\u0644 \u0645\u0633\u0628\u0642\u0627\u064b. \u0627\u0633\u062a\u062e\u062f\u0645\u064a Log in.', 'error'); return; }
     const passwordHash = await hashPassword(password);
     const cfg = await loadConfig();
-    const newUser = {name, startDate:challengeCycleStartForDate(todayStr(), (cfg && cfg.startDate) || OFFICIAL_START_DATE), days:new Array(TOTAL_DAYS).fill(false), passwordHash};
+    const newUser = {name, startDate:challengeCycleStartForDate(todayStr(), OFFICIAL_START_DATE), days:new Array(TOTAL_DAYS).fill(false), passwordHash};
     await saveUser(name, newUser);
     rememberSavedLogin(name, passwordHash);
     setAuthMessage('\u062a\u0645 \u0625\u0646\u0634\u0627\u0621 \u062d\u0633\u0627\u0628\u0643 \u0628\u0646\u062c\u0627\u062d.', 'success');

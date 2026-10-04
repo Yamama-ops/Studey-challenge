@@ -813,7 +813,7 @@ async function renderBoard(){
   const entries = users.map(d => ({
     name: d.name,
     done: d.startDate === startDate ? (d.days || []).filter(Boolean).length : 0,
-    worshipCount: d.startDate === startDate ? Object.values(d.worship || {}).reduce((sum, item) => sum + (item.salawat ? 1 : 0) + (item.kahf ? 1 : 0), 0) : 0
+    worshipCount: d.startDate === startDate ? Object.values(d.worship || {}).reduce((sum, item) => sum + (item.salawat ? 1 : 0) + (item.kahf ? 1 : 0) + (item.quran ? 1 : 0), 0) : 0
   }));
   entries.sort((a,b) => b.done - a.done);
 
